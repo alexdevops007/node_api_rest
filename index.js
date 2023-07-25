@@ -2,12 +2,12 @@ const express = require("express");
 const colors = require("colors");
 const mongoose = require("mongoose");
 const Product = require("./models/productModel");
-const password = require("./password.json")
+const password = require("./password.json");
 const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }));
 // routes
 
 /* GET all products */
@@ -43,18 +43,35 @@ app.post("/product", async (req, res) => {
 });
 
 /* PUT edit product */
-app.put("/products/:id", async(req, res) => {
+app.put("/products/:id", async (req, res) => {
   try {
-    const {id} = req.params;
-    const product = await Product.findByIdAndUpdate(id, req.body)
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(id, req.body);
     // cannot find any product in database
     if (!product) {
-      return res.status(404).json({ message: `cannot find any product with ID ${id}` })
+      return res
+        .status(404)
+        .json({ message: `cannot find any product with ID ${id}` });
     }
-    const updateProduct = await Product.findById(id)
-    res.status(200).json(updateProduct)
+    const updateProduct = await Product.findById(id);
+    res.status(200).json(updateProduct);
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
+  }
+});
+
+/* DELETE product */
+app.delete("/products/:id", async (req, res) => {
+  try {
+    const {id} = req.params;
+    const product = await Product.findByIdAndDelete(id)
+    if (!product) {
+      return res
+        .status(404)
+        .json({ message: `cannot find any product with ID ${id}` });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 })
 
