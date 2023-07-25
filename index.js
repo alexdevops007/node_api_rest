@@ -7,6 +7,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }))
 // routes
 
 /* GET all products */
@@ -50,7 +51,8 @@ app.put("/products/:id", async(req, res) => {
     if (!product) {
       return res.status(404).json({ message: `cannot find any product with ID ${id}` })
     }
-    res.status(200).json(product)
+    const updateProduct = await Product.findById(id)
+    res.status(200).json(updateProduct)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
